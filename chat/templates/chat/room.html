@@ -134,32 +134,47 @@
 
         chatSocket.onopen = function (e) {
             console.log("connection open !!!");
+            fetchMessages();
             // display connected as facebook messagner
         }
 
-        chatSocket.onmessage = function (e) {
-            console.log("message", e);
-            var data = JSON.parse(e.data);
-            var message = data['message'];
-            var author = message['author'];
+        function fetchMessages(){
+            chatSocket.send(JSON.stringify({'command':'fetch_messages'}))
+        }
+        function createMessage(data){
+            var author = data['author'];
 
             var msgListTag = document.createElement('li');
             var imgTag = document.createElement('img');
             var pTag = document.createElement('p');
-            pTag.textContent = message.content;
+            pTag.textContent = data.content;
             imgTag.src = "http://emilcarlsson.se/assets/mikeross.png";
 
-            console.log(author)
-            console.log(username)
+            // console.log(author)
+            // console.log(username)
 
-            if (author == username){
+            if (author == username) {
                 msgListTag.className = 'sent';
-            }else{
+            } else {
                 msgListTag.className = 'replies';
             }
             msgListTag.appendChild(imgTag);
             msgListTag.appendChild(pTag);
             document.querySelector('#chat-log').appendChild(msgListTag);
+        }
+
+        chatSocket.onmessage = function (e) {
+            console.log("message", e);
+            var data = JSON.parse(e.data);
+            if(data['command'] === 'messages'){
+                for( let i=0; i < data['messages'].length ; i++){
+                    createMessage(data['messages'][i]);
+                }
+            }
+            else{
+                createMessage(data['message'])
+            }
+            
 
         };
 
