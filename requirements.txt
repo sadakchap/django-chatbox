@@ -10,7 +10,7 @@ colorama==0.4.1
 constantly==15.1.0
 cryptography==2.7
 daphne==2.3.0
-Django==2.2.18
+Django==2.2.21
 hyperlink==19.0.0
 idna==2.8
 incremental==17.5.0
